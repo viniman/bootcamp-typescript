@@ -43,6 +43,27 @@ import dashboardStyle from "../../assets/jss/material-dashboard-react/views/dash
 import CustomInput from "../../components/CustomInput/CustomInput";
 import Success from "../../components/Typography/Success";
 
+type temperature = {
+  coord: {
+    lon: number;
+    lat: number;
+ }
+ weather: Array<{
+   id: number;
+   description: string;
+ }>
+ main: {
+   temp: number;
+   temp_min: number;
+   temp_max: number;
+   feels_like: number;
+  }
+}
+
+type APIResponse = {
+  list: Array<temperature>
+}
+
 interface Props {
   classes: any;
 }
@@ -52,6 +73,7 @@ interface State {
   creatingMessage: boolean;
   messageSuccess: boolean;
   messageFailed: boolean
+  apiResponse?: APIResponse; // chamada assincrona, a primeira vez nao vai ter APIResponse, então pode não ter
 }
 
 class Dashboard extends React.Component<Props, State> {
@@ -66,6 +88,18 @@ class Dashboard extends React.Component<Props, State> {
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
+
+  
+
+  componentDidMount() {
+    console.log('component did mount');
+    //const url: string = 'http://api.openweathermap.org/data/2.5/weather?q=teresopolis,rj,br&appid=bcb5d380a14b99320a24004d3ccae69d&lang=pt&units=metric';
+    const url: string = 'https://api.openweathermap.org/data/2.5/forecast?q=juiz+de+fora,mg,br,&cnt=14&appid=10775a0599edb5d76af7f2e1d4c94be5&lang=pt&units=metric';
+    fetch(url)
+    .then((response) => response.json())
+    .then((response: APIResponse) => this.setState({ apiResponse: response })); // console.log(response)
+  }
+
   handleChange = (event: any, value: number) => {
     this.setState({ value });
   };
@@ -73,6 +107,8 @@ class Dashboard extends React.Component<Props, State> {
   handleChangeIndex = (index: number) => {
     this.setState({ value: index });
   };
+
+  // const timestampToDate = (timestamp: string) => (new Date(timestamp));
 
   render() {
     const { classes } = this.props;
@@ -86,8 +122,8 @@ class Dashboard extends React.Component<Props, State> {
                 <CardIcon color="success">
                   <Store />
                 </CardIcon>
-                <p className={classes.cardCategory}>Revenue</p>
-                <h3 className={classes.cardTitle}>$34,245</h3>
+                <p className={classes.cardCategory}>Temperatura</p>
+                <h3 className={classes.cardTitle}>{this.state.apiResponse?.list[0].main.temp}</h3>
               </CardHeader>
               <CardFooter stats={true}>
                 <div className={classes.stats}>
@@ -103,9 +139,9 @@ class Dashboard extends React.Component<Props, State> {
                 <CardIcon color="warning">
                   <Icon>content_copy</Icon>
                 </CardIcon>
-                <p className={classes.cardCategory}>Used Space</p>
+                <p className={classes.cardCategory}>Data</p>
                 <h3 className={classes.cardTitle}>
-                  49/50 <small>GB</small>
+                {this.state.apiResponse?.list[0].main.temp} <small>DIA</small>
                 </h3>
               </CardHeader>
               <CardFooter stats={true}>
