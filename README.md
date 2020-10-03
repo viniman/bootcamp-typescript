@@ -1,5 +1,9 @@
 # Bootcamp TypeScript com React
 
+## Fork
+
+Fork from [app-masters-academy/typescript-dashboard](https://github.com/app-masters-academy/typescript-dashboard)
+
 ## Overview
 
 **O intuito deste projeto é auxiliar no estudo das tecnologias React e Typescript.**
